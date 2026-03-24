@@ -1,0 +1,38 @@
+services:
+  api:
+    build:
+      context: .
+      target: api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./runs:/app/runs
+      - ./checkpoints:/app/checkpoints
+      - ./trained_models:/app/trained_models
+    environment:
+      - MUJOCO_GL=osmesa
+    restart: unless-stopped
+
+  train:
+    build:
+      context: .
+      target: train-cpu
+    volumes:
+      - ./runs:/app/runs
+      - ./checkpoints:/app/checkpoints
+      - ./configs:/app/configs
+    environment:
+      - MUJOCO_GL=osmesa
+    profiles:
+      - training
+    command: ["--config", "configs/training/default.yaml"]
+
+  tensorboard:
+    image: tensorflow/tensorflow:latest
+    ports:
+      - "6006:6006"
+    volumes:
+      - ./runs:/logs
+    command: ["tensorboard", "--logdir=/logs", "--bind_all"]
+    profiles:
+      - monitoring
