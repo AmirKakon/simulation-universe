@@ -1,6 +1,6 @@
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
 
 [project]
 name = "simverse"
@@ -51,8 +51,8 @@ all = ["simverse[training,api,viewer,dev]"]
 simverse-train = "simverse.training.cli:main"
 simverse-serve = "simverse.api.app:run_server"
 
-[tool.hatch.build.targets.wheel]
-packages = ["src/simverse"]
+[tool.setuptools.packages.find]
+where = ["src"]
 
 [tool.ruff]
 target-version = "py310"
